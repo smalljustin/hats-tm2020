@@ -2,7 +2,7 @@
 name = "Hats for TM2020"
 author = "sgt_bigbird"
 category = "Overlay"
-version = "0.0.2"
+version = "0.0.1"
 
 [script]
 dependencies = [ "VehicleState", "Camera" ]
