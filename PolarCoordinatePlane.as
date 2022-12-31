@@ -36,6 +36,14 @@ class PolarCoordinatePlane {
     }
 
     void renderHat() {
+        if (Camera::IsBehind(visState.Position)) {
+            return;
+        }
+
+        if ((Camera::GetCurrentPosition() - visState.Position).LengthSquared() < 1) {
+            return; 
+        }
+
         array<array<vec3>> pointArrays();
 
         for (int i = 0; i <= 1; i++) {
