@@ -47,9 +47,15 @@ class GraphHud {
     }
 
     void update(CSceneVehicleVisState @ visState) {
+        if (visState is null) {
+            return;
+        }
         _polarCoordinatePlane.update(visState);
     }
     void Render(CSceneVehicleVisState @ visState) {
+        if (visState is null) {
+            return;
+        }
         _polarCoordinatePlane.render();
     }
 }

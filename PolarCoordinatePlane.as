@@ -24,6 +24,9 @@ class PolarCoordinatePlane {
 
     CircularHat circularHat();
 
+    string active_map_uuid;
+    bool map_render_check = false;
+
     PolarCoordinatePlane() {
         this.tssIdx = 0;
     }
@@ -207,6 +210,13 @@ class PolarCoordinatePlane {
         if (visState is null) {
             return;
         }
+
+
+
+        if (getMapUid() == active_map_uuid && !map_render_check) {
+            map_render_check = true;
+            return;
+        }
         tssIdx = 0;
         renderHat();
     }
@@ -222,6 +232,11 @@ class PolarCoordinatePlane {
     void update(CSceneVehicleVisState @ visState) {
         if (visState is null) {
             return;
+        }
+
+        if (getMapUid() != active_map_uuid) {
+            map_render_check = false;
+            active_map_uuid = getMapUid();
         }
         @this.visState = @visState;
     }
