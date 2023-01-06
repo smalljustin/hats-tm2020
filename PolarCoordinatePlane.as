@@ -29,7 +29,7 @@ class PolarCoordinatePlane {
         this.tssIdx = 0;
     }
 
-    CircularHat circularHat = CircularHat();
+    CatEars circularHat = CatEars();
 
     void renderHat() {
         if (Camera::IsBehind(visState.Position)) {

@@ -47,7 +47,7 @@ class CircularHat : BaseHat {
         }
 
         for (int i = 0; i < pointArrays.Length; i++) {
-            this.renderPointArray(pointArrays[i], HAT_COLOR_3);
+            renderPointArray(pointArrays[i], HAT_COLOR_3);
         }
     }
     }
@@ -84,11 +84,3 @@ class CircularHat : BaseHat {
         return vec3(HAT_MINOR_AXIS * 0.5, theta, 0);
     }
 
-    float elipse(float theta, float a, float b) {
-        return (a * b) / (
-            ( 0
-                + (b * Math::Cos(theta)) ** 2
-                + (a * Math::Sin(theta)) ** 2
-            ) ** 0.5
-        );
-    }

@@ -31,7 +31,7 @@ float HAT_X_OFFSET = 0.141;
 float CHI_BASE = -1.626;
 
 [Setting category="Circular Hat" name="Number steps" drag min=3 max=50]
-int HAT_STEPS = 10;
+int HAT_STEPS = 12;
 
 [Setting category="Circular Hat" name="Stripe Num Steps" drag min=1 max=8]
 int HAT_STRIPE_STEP = 4;
