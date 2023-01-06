@@ -22,8 +22,6 @@ class PolarCoordinatePlane {
 
     CSceneVehicleVisState @ visState;
 
-    CircularHat circularHat();
-
     string active_map_uuid;
     bool map_render_check = false;
 
@@ -31,12 +29,7 @@ class PolarCoordinatePlane {
         this.tssIdx = 0;
     }
 
-    vec3 offsetHatPoint(vec3 point, float y_offset, float x_offset) {
-        point += visState.Dir * -x_offset;
-        point += visState.Up * y_offset;
-
-        return point;
-    }
+    CircularHat circularHat = CircularHat();
 
     void renderHat() {
         if (Camera::IsBehind(visState.Position)) {
@@ -47,80 +40,7 @@ class PolarCoordinatePlane {
             return; 
         }
 
-        array<array<vec3>> pointArrays();
-
-        for (int i = 0; i <= 1; i++) {
-            array<vec3> points();
-            for (float theta = 0; theta < 4 * HALF_PI; theta += HALF_PI / HAT_STEPS) {
-                vec3 point = projectCylindricalVec(visState.Left, circularHat.getPoint(i, theta));
-                points.InsertLast(offsetHatPoint(point, HAT_Y_OFFSET, HAT_X_OFFSET));
-            }
-            pointArrays.InsertLast(points);
-        }
-
-
-        for (int i = 1; i < NUM_HAT_LAYERS; i++) {
-            array<vec3> points_l1;
-            for (float theta = 0; theta < 4 * HALF_PI; theta += HALF_PI / HAT_STEPS) {
-                vec3 point = projectCylindricalVec(visState.Left, circularHat.getPoint(2, theta));
-                points_l1.InsertLast(offsetHatPoint(point, HAT_Y_OFFSET + HAT_Y_OFFSET_2 * i, HAT_X_OFFSET));
-            }
-            pointArrays.InsertLast(points_l1);
-        }
-
-
-
-        if (ENABLE_STRIPES) {
-
-        int idx = 0;
-
-        for (int j = 0; j < pointArrays[0].Length; j += HAT_STRIPE_STEP) {
-            nvg::BeginPath();
-            nvg::MoveTo(Camera::ToScreenSpace(pointArrays[0][j]));
-            for (int i = 0; i < pointArrays.Length; i++) {
-                nvg::LineTo(Camera::ToScreenSpace(pointArrays[i][j]));
-            }
-            vec3 endPoint = offsetHatPoint(visState.Position, HAT_Y_OFFSET + HAT_Y_OFFSET_2 * (NUM_HAT_LAYERS - 1), HAT_X_OFFSET);
-            nvg::LineTo(Camera::ToScreenSpace(endPoint));
-
-            if (idx % 2 == 0) {
-            nvg::StrokeColor(HAT_COLOR_1);
-            } else {
-            nvg::StrokeColor(HAT_COLOR_2);
-            }
-
-            idx += 1;
-            nvg::StrokeWidth(4);
-            nvg::Stroke();
-            nvg::ClosePath();
-        }
-        }
-
-
-        for (int i = 0; i < pointArrays.Length; i++) {
-            renderPointArray(pointArrays[i], HAT_COLOR_3);
-        }
-    }
-
-    void renderPointArray(array<vec3> points, vec4 color) {
-
-        if (points.Length == 0) {
-            return;
-        }
-        nvg::BeginPath();
-        nvg::MoveTo(Camera::ToScreenSpace(points[0]));
-    
-        for (int i = 1; i < points.Length; i++) {
-            nvg::LineTo(Camera::ToScreenSpace(points[i]));
-        }
-
-        nvg::LineTo(Camera::ToScreenSpace(points[0]));
-
-        nvg::StrokeColor(color);
-        nvg::StrokeWidth(4);
-        nvg::Stroke();
-        nvg::ClosePath();
-
+        circularHat.render(visState);
     }
 
     bool renderCheck() {
@@ -164,24 +84,6 @@ class PolarCoordinatePlane {
         theta += get_theta_base(basis);
         vec3 angle_cross = vec3(Math::Sin(theta), 0, Math::Cos(theta));
         return angle_cross;
-    }
-
-    vec3 projectPolar(vec3 basis, float r, float theta) {
-        return projectCylindrical(basis, r, theta, 0);
-    }
-
-    vec3 projectCylindricalVec(vec3 basis, vec3 vec) {
-        return projectCylindrical(basis, vec.x, vec.y, vec.z);
-    }
-
-    vec3 projectCylindrical(vec3 basis, float r, float theta, float height) {
-        // vec3 angle_cross = getAngleCylindrical(basis, theta);
-        vec3 p = visState.Position;
-        p += visState.Up * height;
-        p += visState.Dir * Math::Sin(theta) * r;
-        p += visState.Left * Math::Cos(theta) * r;
-
-        return p;
     }
 
 

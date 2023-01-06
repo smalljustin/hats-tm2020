@@ -30,19 +30,19 @@ float HAT_X_OFFSET = 0.141;
 [Setting category="General" name="Chi base" drag min=-3.1415926 max=3.1415926] 
 float CHI_BASE = -1.626;
 
-[Setting category="General" name="Number steps" drag min=3 max=50]
-int HAT_STEPS = 14;
+[Setting category="Circular Hat" name="Number steps" drag min=3 max=50]
+int HAT_STEPS = 10;
 
-[Setting category="General" name="Stripe Num Steps" drag min=1 max=8]
+[Setting category="Circular Hat" name="Stripe Num Steps" drag min=1 max=8]
 int HAT_STRIPE_STEP = 4;
 
-[Setting category="General" name="Hat Color 1" color]
+[Setting category="Circular Hat" name="Hat Color 1" color]
 vec4 HAT_COLOR_1(125.0/255.0, 19.0/255.0, 36.0/255.0, 200.0/255.0);
 
-[Setting category="General" name="Hat Color 2" color]
+[Setting category="Circular Hat" name="Hat Color 2" color]
 vec4 HAT_COLOR_2(21.0/255.0, 32.0/255.0, 80.0/255.0, 200.0/255.0);
 
-[Setting category="General" name="Hat Color 3" color]
+[Setting category="Circular Hat" name="Hat Color 3" color]
 vec4 HAT_COLOR_3(250.0/255.0, 250.0/255.0, 250.0/255.0, 70.0/255.0);
 
 [Setting category="General" name="Enable stripes"]
