@@ -8,12 +8,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 $primBG: #323230;
-$primText: #e2e2d1;
-$primLink: #cc8;
-$hoverLink: #ffc;
+$primText: #e2d1e2;
+$primLink: #c8c;
+$hoverLink: #fcf;
 
 $navbarBG: #0c0c0c;
-$navbarLink: #80a053;
+$navbarLink: #8053a0;
 $navbarHoverLink: color.scale($navbarLink, $lightness: 20%);
 
 $errorMSGText: #dd9d98;
@@ -24,7 +24,7 @@ $friendlyMSGText: #9ddd98;
 $friendlyMSGBG: #285a24;
 $friendlyMSGBorder: #62dd5a;
 
-$accent: #9b9b67;
+$accent: #9b679b;
 
 $buttonBorder: $accent;
 $buttonBackground: color.scale($buttonBorder, $lightness: -20%); // #557850
