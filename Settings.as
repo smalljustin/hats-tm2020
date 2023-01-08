@@ -4,10 +4,10 @@ bool g_visible = true;
 bool Setting_General_HideWhenNotPlaying = true;
 
 [Setting category="General" name="Use Circular Hat"]
-bool USE_CIRCLE_HAT = false;
+bool USE_CIRCLE_HAT = true;
 
 [Setting category="General" name="Use Top Hat"]
-bool TOP_HAT = true;
+bool TOP_HAT = false;
 
 [Setting category="General" name="Use cat ears"]
 bool CAT_EARS = false;
