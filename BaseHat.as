@@ -35,6 +35,51 @@ vec3 projectHatSpace(CSceneVehicleVisState@ visState, vec3 point) {
     return offsetHatPoint(visState, visState.Position + (visState.Left * point.x) + (visState.Up * point.y) + (visState.Dir * point.z), HAT_Y_OFFSET, HAT_X_OFFSET);
 }
 
+vec3 projectHatSpace(CSceneVehicleVisState@ visState, Vertex point) {
+    vec3 vertexPoint = point.toVec();
+    if (OBJECT_EDIT_OVERRIDE) {
+        vertexPoint *= SCALE_OVERRIDE;
+    } else {
+        vertexPoint *= point.scale;
+    }
+    // if (OBJECT_EDIT_OVERRIDE) {
+    //     vertexPoint *= SCALE_OVERRIDE;
+    //     vertexPoint += (visState.Left * X_AXIS_OVERRIDE);
+    //     vertexPoint += (visState.Up * Y_AXIS_OVERRIDE);
+    //     vertexPoint += (visState.Dir * Z_AXIS_OVERRIDE);
+    //     nvg::BeginPath();
+    //     nvg::MoveTo(Camera::ToScreenSpace(visState.Position));
+    //     nvg::LineTo(Camera::ToScreenSpace(visState.Position + visState.Dir * Z_AXIS_OVERRIDE));
+    //     nvg::StrokeColor(vec4(1, 1, 1,1));
+    //     nvg::Stroke();
+    //     nvg::ClosePath();
+    //     point.width = WIDTH_OVERRIDE;
+    //     point.color = COLOR_OVERRIDE;
+    // } else {
+    //     vertexPoint *= point.scale;
+    //     vertexPoint += (visState.Left * point.xloc);
+    //     vertexPoint += (visState.Up * point.yloc);
+    //     vertexPoint += (visState.Dir * point.zloc);
+    // }
+    vec3 res = offsetHatPoint(visState, visState.Position + (visState.Left * vertexPoint.x) + (visState.Up * vertexPoint.y) + (visState.Dir * vertexPoint.z), HAT_Y_OFFSET, HAT_X_OFFSET);
+
+    if (OBJECT_EDIT_OVERRIDE) {
+        res += (visState.Left * X_AXIS_OVERRIDE);
+        res += (visState.Up * Y_AXIS_OVERRIDE);
+        res += (visState.Dir * Z_AXIS_OVERRIDE);
+    } else {
+        res += (visState.Left * point.xloc);
+        res += (visState.Up * point.yloc);
+        res += (visState.Dir * point.zloc);
+    }
+
+    return res;
+
+
+
+}
+
+
 vec3 projectCylindricalVec(CSceneVehicleVisState@ visState, vec3 vec) {
     return projectCylindrical(visState, vec.x, vec.y, vec.z);
 }

@@ -3,6 +3,18 @@ bool g_visible = true;
 
 bool Setting_General_HideWhenNotPlaying = true;
 
+[Setting category="General" name="Use Circular Hat"]
+bool USE_CIRCLE_HAT = false;
+
+[Setting category="General" name="Use Top Hat"]
+bool TOP_HAT = true;
+
+[Setting category="General" name="Use cat ears"]
+bool CAT_EARS = false;
+
+[Setting category="General" name="Use Peaky Blinders cap"]
+bool PEAKY_BLINDERS = false;
+
 [Setting category="Player View" name="Use currently viewed player"]
 bool UseCurrentlyViewedPlayer = true;
 
@@ -47,3 +59,24 @@ vec4 HAT_COLOR_3(250.0/255.0, 250.0/255.0, 250.0/255.0, 70.0/255.0);
 
 [Setting category="General" name="Enable stripes"]
 bool ENABLE_STRIPES = false;
+
+[Setting category="Custom Hats" name="Edit Object Override"] 
+bool OBJECT_EDIT_OVERRIDE = true;
+
+[Setting category="Custom Hats" name="Object scale override" min=0.001 max=1]
+float SCALE_OVERRIDE = 0.5;
+
+[Setting category="Custom Hats" name="X axis override" min=0.001 max=1]
+float X_AXIS_OVERRIDE = 0;
+
+[Setting category="Custom Hats" name="Y axis override" min=0.001 max=1]
+float Y_AXIS_OVERRIDE = 0;
+
+[Setting category="Custom Hats" name="Z axis override" min=0.001 max=1]
+float Z_AXIS_OVERRIDE = 0;
+
+[Setting category="Custom Hats" name="Color override" color]
+vec4 COLOR_OVERRIDE = vec4(1, 1, 1, 1);
+
+[Setting category="Custom Hats" name="Width override" min=0.1 max=4]
+float WIDTH_OVERRIDE = 1;
