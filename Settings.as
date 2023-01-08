@@ -61,7 +61,7 @@ vec4 HAT_COLOR_3(250.0/255.0, 250.0/255.0, 250.0/255.0, 70.0/255.0);
 bool ENABLE_STRIPES = false;
 
 [Setting category="Custom Hats" name="Edit Object Override"] 
-bool OBJECT_EDIT_OVERRIDE = true;
+bool OBJECT_EDIT_OVERRIDE = false;
 
 [Setting category="Custom Hats" name="Object scale override" min=0.001 max=1]
 float SCALE_OVERRIDE = 0.5;
