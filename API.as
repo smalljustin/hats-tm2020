@@ -115,7 +115,10 @@ class API {
         }
 
         asyncInProgress = true;
-        @req = APIReq(baseURL + _endpoint, payload, method);
+        if (method == "POST") {
+            @req = APIReq(baseURL + _endpoint, payload);
+        }
+        
         while (!req.Finished()) {
             yield();
         }
@@ -156,11 +159,9 @@ class API {
     /**
      * internal helper
      */
-    Net::HttpRequest@ APIReq(string &in url, Json::Value json, string method = "POST")
+    Net::HttpRequest@ APIReq(string &in url, Json::Value json)
     {
-        Net::HttpRequest ret;
-        if (method == "POST") ret = Net::HttpPost(url, Json::Write(json), "application/json");
-        if (method == "GET") ret = Net::HttpGet(url, Json::Write(json), "application/json");
+        auto ret = Net::HttpPost(url, Json::Write(json), "application/json");
     	return ret;
     }
 
