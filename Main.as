@@ -85,6 +85,5 @@ void Main() {
 }
 
 void OnSettingsChanged() {
-  log("hi");
   graphHud.onSettingsChange();
 }

@@ -44,8 +44,7 @@ class ObjRender : BaseHat {
         if (hatRead || active_hat == "") {
             return;
         }
-        string p = IO::FromAppFolder("\\Openplanet\\Plugins\\Hats-TM2020\\hats\\" + active_hat); 
-        IO::File f(p, IO::FileMode::Read);
+        IO::FileSource f("hats\\" + active_hat); 
         float scale = 1;
         float xloc = 0;
         float yloc = 0;

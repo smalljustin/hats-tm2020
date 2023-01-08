@@ -4,10 +4,10 @@ bool g_visible = true;
 bool Setting_General_HideWhenNotPlaying = true;
 
 [Setting category="General" name="Use Circular Hat"]
-bool USE_CIRCLE_HAT = false;
+bool USE_CIRCLE_HAT = true;
 
 [Setting category="General" name="Use Top Hat"]
-bool TOP_HAT = true;
+bool TOP_HAT = false;
 
 [Setting category="General" name="Use cat ears"]
 bool CAT_EARS = false;
@@ -61,7 +61,7 @@ vec4 HAT_COLOR_3(250.0/255.0, 250.0/255.0, 250.0/255.0, 70.0/255.0);
 bool ENABLE_STRIPES = false;
 
 [Setting category="Custom Hats" name="Edit Object Override"] 
-bool OBJECT_EDIT_OVERRIDE = true;
+bool OBJECT_EDIT_OVERRIDE = false;
 
 [Setting category="Custom Hats" name="Object scale override" min=0.001 max=1]
 float SCALE_OVERRIDE = 0.5;
