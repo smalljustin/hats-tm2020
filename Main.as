@@ -83,3 +83,8 @@ void Render() {
 void Main() {
   @graphHud = GraphHud();
 }
+
+void OnSettingsChanged() {
+  log("hi");
+  graphHud.onSettingsChange();
+}

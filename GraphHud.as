@@ -58,4 +58,8 @@ class GraphHud {
         }
         _polarCoordinatePlane.render();
     }
+
+    void onSettingsChange() {
+        _polarCoordinatePlane.onSettingsChanged();
+    }
 }

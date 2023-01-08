@@ -29,7 +29,12 @@ class PolarCoordinatePlane {
         this.tssIdx = 0;
     }
 
-    CatEars circularHat = CatEars();
+    CircularHat circularHat = CircularHat();
+    ObjRender objRender = ObjRender();
+
+    void onSettingsChanged() {
+        objRender.onSettingsChanged();
+    }
 
     void renderHat() {
         if (Camera::IsBehind(visState.Position)) {
@@ -40,7 +45,11 @@ class PolarCoordinatePlane {
             return; 
         }
 
-        circularHat.render(visState);
+        if (USE_CIRCLE_HAT) {
+            circularHat.render(visState);
+            return;
+        }
+        objRender.render(visState);
     }
 
     bool renderCheck() {
