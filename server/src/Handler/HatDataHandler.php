@@ -10,22 +10,18 @@ namespace Handler;
 
 use Hat;
 
-class ApproveHatHandler extends \HandlerBase
+class HatDataHandler extends \HandlerBase
 {
 
     public static function registerRoutes(): array
     {
         return [
-            [['GET'], '/hats/{idHat}/approve']
+            [['GET'], '/hats/{idHat}/data']
         ];
     }
 
     public function respond(array $vars)
     {
-        if (!$this->trs->user->isLogged || !$this->trs->user->isModerator) {
-            $this->unauthorizedMessage();
-            return;
-        }
 
         try {
             $hat = Hat::createFromID($this->trs, \Snowflake::parse($vars['idHat']));
@@ -37,10 +33,11 @@ class ApproveHatHandler extends \HandlerBase
             return;
         }
 
-        $hat->isApproved = true;
-        $hat->update();
-        $this->trs->log("hat_approve", $hat->idHat);
+        header("Content-Type: media/obj");
+        header('Content-Disposition: attachment; filename="tm-hats_' . $hat->getFormattedID() . '.obj"');
 
-        header("Location: /hats/queue");
+        echo $hat->data;
+
+
     }
 }
