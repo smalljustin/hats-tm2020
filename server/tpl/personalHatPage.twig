@@ -19,14 +19,16 @@
             </thead>
             {% for h in hats %}
                 <tr>
-                    <td class="nowrap">{{ h.idHat }}</td>
+                    <td class="nowrap">{{ h.getFormattedID() }}</td>
                     <td class="nowrap">{{ h.name }}</td>
                     <td class="nowrap"
                         data-sort="{{ h.created.timestamp }}">{{ h.created.locale(trs.user.locale).isoFormat("lll") }}
                         <br/><small><em>{{ h.created.locale(trs.user.locale).longRelativeDiffForHumans(2) }}</em></small>
                     </td>
                     <td class="nowrap">{% if h.isApproved %}Approved{% else %}Not approved{% endif %}</td>
-                    <td class="nowrap"><a href="/hats/{{ h.idHat }}/data">Download</a> ({{ h.getSizeString() }})</td>
+                    <td class="nowrap"><a href="/hats/{{ h.getFormattedID() }}/data">Download</a>
+                        ({{ h.getSizeString() }})
+                    </td>
                 </tr>
             {% endfor %}
         </table>
