@@ -5,7 +5,9 @@
  * can be found in the LICENSE file.
  */
 
-class Hat
+use CharlotteDunois\Collect\Collection;
+
+class Hat implements JsonSerializable
 {
     public int $idHat;
     public string $name;
@@ -77,13 +79,42 @@ class Hat
 
         $hat->idHat = $res['idHat'];
         $hat->name = $res['name'];
-        $hat->author = $res['author'];
+        $hat->author = User::createFromID($trs, $res['author']);
         $hat->isApproved = $res['isApproved'];
         $hat->data = $res['data'];
         $hat->created = new \Carbon\Carbon($res['created']);
         $hat->updated = new \Carbon\Carbon($res['updated']);
 
         return $hat;
+    }
+
+    public static function getHatsByUser(TRSite $trs, User $user): Collection
+    {
+        $qb = $trs->db->createQueryBuilder();
+        $qb->select("*")
+            ->from("hats")
+            ->where('author = ?')
+            ->setParameter(0, $user->id);
+
+        $collect = new Collection();
+        foreach ($qb->fetchAllAssociative() as $row) {
+            $collect->set($row['idHat'], self::createFromDBRow($trs, $row));
+        }
+
+        return $collect;
+    }
+
+    public static function getAllHats(TRSite $trs): Collection
+    {
+        $qb = $trs->db->createQueryBuilder();
+        $qb->select("*")->from("hats");
+
+        $collect = new Collection();
+        foreach ($qb->fetchAllAssociative() as $row) {
+            $collect->set($row['idHat'], self::createFromDBRow($trs, $row));
+        }
+
+        return $collect;
     }
 
     public function update(): bool
@@ -107,4 +138,23 @@ class Hat
         );
     }
 
+    public function getSizeString(): string
+    {
+        $len = strlen($this->data);
+
+        $base = log(strlen($this->data), 1024);
+        $suffixes = array('bytes', 'KiB', 'MiB', 'GiB', 'TiB');
+
+        return round(pow(1024, $base - floor($base)), 2) . ' ' . $suffixes[floor($base)]; // todo localize
+    }
+
+    public function jsonSerialize(): object
+    {
+        return (object)[
+            'idHat' => $this->idHat,
+            'name' => $this->name,
+            'author' => $this->author,
+            'approved' => $this->isApproved,
+        ];
+    }
 }

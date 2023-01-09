@@ -1,0 +1,52 @@
+{% extends "base.twig" %}
+
+{% block title %}Add Hat{% endblock title %}
+
+{% block content %}
+
+    {% if hats.count() > 0 %}
+        <h1>My Hats</h1>
+
+        <table class="sortable">
+            <thead>
+            <tr>
+                <th class="nowrap">ID</th>
+                <th class="nowrap">Name</th>
+                <th class="nowrap">Created</th>
+                <th class="nowrap">Status</th>
+                <th class="nowrap">File</th>
+            </tr>
+            </thead>
+            {% for h in hats %}
+                <tr>
+                    <td class="nowrap">{{ h.idHat }}</td>
+                    <td class="nowrap">{{ h.name }}</td>
+                    <td class="nowrap"
+                        data-sort="{{ h.created.timestamp }}">{{ h.created.locale(trs.user.locale).isoFormat("lll") }}
+                        <br/><small><em>{{ h.created.locale(trs.user.locale).longRelativeDiffForHumans(2) }}</em></small>
+                    </td>
+                    <td class="nowrap">{% if h.isApproved %}Approved{% else %}Not approved{% endif %}</td>
+                    <td class="nowrap"><a href="/hats/{{ h.idHat }}/data">Download</a> ({{ h.getSizeString() }})</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% endif %}
+
+    <h1>Add Hat</h1>
+    <form method="post" action="/hats">
+        <div class="formItem">
+            <label for="name">Name</label>
+            <input name="name" id="name" required="required" max="255"/>
+        </div>
+        <div class="formItem">
+            <label for="data">Model (.obj file)</label>
+            <input name="data" id="data" type="file" required="required" accept="model/obj,.obj"/>
+        </div>
+        <div class="formItem">
+            <div class="shim"></div>
+            <input type="submit" name="submit" id="submit" value="Submit for review"/>
+        </div>
+    </form>
+
+{% endblock %}
