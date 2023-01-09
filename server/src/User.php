@@ -18,10 +18,9 @@ class User implements JsonSerializable
     public bool $isMember;
 
     public string $id;
+    public ?string $login;
     public string $displayName;
-    public ?string $clubTag;
 
-    public ?string $login; // tm login, just another type of id lmao
     public ?string $apiKey;
 
 
@@ -94,7 +93,6 @@ class User implements JsonSerializable
         $user->isBanned = $res['isBanned'];
         $user->isModerator = $res['isModerator'];
         $user->displayName = $res['displayName'];
-        $user->clubTag = $res['clubTag'];
         $user->locale = $res['locale'];
         $user->apiKey = $res['apiKey'];
 
@@ -175,7 +173,6 @@ class User implements JsonSerializable
                 $this->isBanned,
                 $this->isModerator,
                 $this->displayName,
-                $this->clubTag,
                 $this->locale,
                 $this->apiKey,
                 $this->login,
@@ -185,7 +182,6 @@ class User implements JsonSerializable
                 "boolean",
                 "boolean",
                 "boolean",
-                "string",
                 "string",
                 "string",
                 "string",
@@ -206,24 +202,6 @@ class User implements JsonSerializable
         $this->trs->user = $this;
         $_SESSION['trLogged'] = true;
         $_SESSION['trUser'] = $this->id;
-    }
-
-    public function getUserRatings(): Collection
-    {
-        $res = $this->trs->db->executeQuery(
-            "select * from votes as v join maps m on v.idMap = m.idMap where v.idUser = ? order by v.voteTime desc",
-            [$this->id], ['string']
-        );
-        $x = new Collection();
-        while ($row = $res->fetchAssociative()) {
-            $v = [];
-            $v['map'] = Map::createFromDBRow($this->trs, $row);
-            $v['vote'] = $row['vote'];
-            $v['PB'] = $row['PB'];
-            $v['voteTime'] = new Carbon($row['voteTime']);
-            $x->set($row['idMap'], $v);
-        }
-        return $x;
     }
 
     public function getSessions(): Collection
@@ -250,7 +228,6 @@ class User implements JsonSerializable
             'uid' => $this->id,
             'login' => $this->login,
             'displayName' => $this->displayName,
-            'club' => $this->clubTag,
             'locale' => $this->locale,
         ];
     }
