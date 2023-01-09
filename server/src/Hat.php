@@ -111,7 +111,7 @@ class Hat implements JsonSerializable
             "update hats set name = ?, author = ?, isApproved = ?, data = ? where idHat = ?",
             [
                 $this->name,
-                $this->author,
+                $this->author->id,
                 $this->isApproved,
                 $this->data,
                 $this->idHat
