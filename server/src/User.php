@@ -21,8 +21,9 @@ class User implements JsonSerializable
     public ?string $login;
     public string $displayName;
 
-    public ?string $apiKey;
+    public ?Hat $hat;
 
+    public ?string $apiKey;
 
     public function __construct(protected TRSite $trs)
     {
@@ -95,6 +96,11 @@ class User implements JsonSerializable
         $user->displayName = $res['displayName'];
         $user->locale = $res['locale'];
         $user->apiKey = $res['apiKey'];
+        if (!is_null($res['hat'])) {
+            $user->hat = Hat::createFromID($trs, $res['hat']);
+        } else {
+            $user->hat = null;
+        }
 
         return $user;
     }
@@ -167,7 +173,7 @@ class User implements JsonSerializable
     public function update(): bool
     {
         return $this->trs->db->executeStatement(
-            "update users set isMember = ?, isBanned = ?, isModerator = ?, displayName = ?, clubTag = ?, locale = ?, apiKey = ?, login = ? where idUser = ?",
+            "update users set isMember = ?, isBanned = ?, isModerator = ?, displayName = ?, locale = ?, apiKey = ?, login = ?, hat = ? where idUser = ?",
             [
                 $this->isMember,
                 $this->isBanned,
@@ -176,6 +182,7 @@ class User implements JsonSerializable
                 $this->locale,
                 $this->apiKey,
                 $this->login,
+                $this->hat->idHat ?? null,
                 $this->id
             ],
             [
@@ -186,6 +193,7 @@ class User implements JsonSerializable
                 "string",
                 "string",
                 "string",
+                "integer",
                 "string"
             ]
         );
@@ -229,6 +237,7 @@ class User implements JsonSerializable
             'login' => $this->login,
             'displayName' => $this->displayName,
             'locale' => $this->locale,
+            'hat' => $this->hat->idHat ?? null,
         ];
     }
 }
