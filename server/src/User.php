@@ -109,6 +109,20 @@ class User implements JsonSerializable
         return $user;
     }
 
+    public static function createFromBulkID(TRSite $trs, array $users): Collection
+    {
+        $qb = $trs->db->createQueryBuilder();
+        $qb->select("*")->from("users")->where("idUser IN (?)")
+            ->setParameter(0, $users, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY);
+
+        $collect = new Collection();
+        foreach ($qb->fetchAllAssociative() as $row) {
+            $collect->set($row['idUser'], self::createFromDBRow($trs, $row));
+        }
+
+        return $collect;
+    }
+
     public static function tryFetchUserFromLogin(TRSite $trs, string $login, bool $breakCache = false): ?self
     {
         static $cache = [];

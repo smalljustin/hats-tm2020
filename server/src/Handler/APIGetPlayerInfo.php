@@ -8,15 +8,13 @@
 
 namespace Handler;
 
-use Snowflake;
-
-class APISetHat extends \HandlerBase
+class APIGetPlayerInfo extends \HandlerBase
 {
 
     public static function registerRoutes(): array
     {
         return [
-            ['POST', '/api/sethat']
+            [['POST'], '/api/playerhats']
         ];
     }
 
@@ -40,21 +38,13 @@ class APISetHat extends \HandlerBase
         }
 
         try {
-            $hat = \Hat::createFromID($this->trs, Snowflake::Parse($body->idHat ?? null));
-
-            if (!$hat->isApproved) {
-                $this->apiError("Unable to set unapproved hats", 401);
-                return;
-            }
-
-            $user->idHat = $hat->idHat;
-            $user->update();
-            $this->trs->log("user_sethat", $hat->idHat, user: $user);
+            $users = \User::createFromBulkID($this->trs, $body->playerIDs ?? []);
 
             header("Content-Type: application/json");
-            echo json_encode($user);
+            echo json_encode($users->values()->all());
+
         } catch (\Throwable $e) {
-            $this->apiError("Unknown map parse error. Please try again", 500, $e->getMessage());
+            $this->apiError("Unknown error. Please try again", 500, $e->getMessage());
         }
     }
 }
