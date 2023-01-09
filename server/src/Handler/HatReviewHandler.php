@@ -8,6 +8,8 @@
 
 namespace Handler;
 
+use Hat;
+
 class HatReviewHandler extends \HandlerBase
 {
 
@@ -31,7 +33,14 @@ class HatReviewHandler extends \HandlerBase
             '/hats/queue' => 'Hat Review',
         ];
 
-        $vars['hats'] = \Hat::getAllHats($this->trs);
+        $vars['hats'] = Hat::getAllHats($this->trs)->sortCustom(function (Hat $a, Hat $b) {
+            $app = $a->isApproved <=> $b->isApproved;
+            $date = $a->created <=> $b->created;
+            if ($app == 0) {
+                return $date;
+            }
+            return $app;
+        });
 
         echo $this->trs->twig->render("hatReview.twig", $vars);
     }
