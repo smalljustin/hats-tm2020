@@ -25,6 +25,11 @@ class AddHatHandler extends \HandlerBase
             return;
         }
 
+        $vars['breadcrumb'] = [
+            '/' => 'Home',
+            '/hats' => 'Hats',
+        ];
+
         if (array_key_exists("submit", $_POST)) {
             if (
                 !array_key_exists('data', $_FILES)

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% if block("title") is defined %}{{ block("title") }} - TrackRatings{% else %}TrackRatings{% endif %}</title>
+    <title>{% if block("title") is defined %}{{ block("title") }} - Hats{% else %}Hats{% endif %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link crossorigin="anonymous" media="all" rel="stylesheet" href="/css/hats.css" />
+    <link crossorigin="anonymous" media="all" rel="stylesheet" href="/css/hats.css"/>
     <script src="https://tofsjonas.github.io/sortable/sortable.js"></script>
-    <meta property="og:site_name" content="trackratings.misfitmaid.com" />
+    <meta property="og:site_name" content="tm-hats.misfitmaid.com"/>
     <meta property="og:title"
-          content="{% if block("title") is defined %}{{ block("title") }}{% else %}Hats{% endif %}" />
+          content="{% if block("title") is defined %}{{ block("title") }}{% else %}Hats{% endif %}"/>
     {% if block("description") is defined %}
-        <meta property="og:description" content="{{ block("description") }}" />
+        <meta property="og:description" content="{{ block("description") }}"/>
     {% endif %}
-    <meta name="theme-color" content="#80a053" />
+    <meta name="theme-color" content="#8053a0"/>
 </head>
 
 <body>
@@ -71,8 +71,9 @@
 {% endblock %}
 {% block footer %}
     <footer>
-        <p><small>Copyright © {{ "now"|date("Y") }} MisfitMaid.<br />
-                <a href="https://github.com/smalljustin/hats-tm2020/issues/new" target="_blank">Report a bug</a> &middot;
+        <p><small>Copyright © {{ "now"|date("Y") }} MisfitMaid.<br/>
+                <a href="https://github.com/smalljustin/hats-tm2020/issues/new" target="_blank">Report a bug</a>
+                &middot;
                 <a href="https://discord.gg/BdKpuFcYzG" target="_blank">Discord</a> &middot;
                 <a href="https://github.com/smalljustin/hats-tm2020" target="_blank">GitHub</a>
             </small></p>
