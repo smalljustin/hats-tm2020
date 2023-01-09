@@ -86,6 +86,23 @@ class Hat implements JsonSerializable
         return $collect;
     }
 
+    public static function getPubAndUserHats(TRSite $trs, ?User $user = null)
+    {
+        $qb = $trs->db->createQueryBuilder();
+        $qb->select("*")->from("hats")->where("isApproved = 1");
+
+        if (!is_null($user)) {
+            $qb->orWhere('author = ?')->setParameter(0, $user->id);
+        }
+
+        $collect = new Collection();
+        foreach ($qb->fetchAllAssociative() as $row) {
+            $collect->set($row['idHat'], self::createFromDBRow($trs, $row));
+        }
+
+        return $collect;
+    }
+
     public function create()
     {
         $qb = $this->trs->db->createQueryBuilder()->insert("hats")->values([
@@ -148,6 +165,8 @@ class Hat implements JsonSerializable
             'name' => $this->name,
             'author' => $this->author,
             'approved' => $this->isApproved,
+            'created' => $this->created->timestamp,
+            'updated' => $this->updated->timestamp
         ];
     }
 }

@@ -25,6 +25,9 @@ class User implements JsonSerializable
 
     public ?string $apiKey;
 
+    public Carbon $created;
+    public Carbon $updated;
+
     public function __construct(protected TRSite $trs)
     {
     }
@@ -96,6 +99,8 @@ class User implements JsonSerializable
         $user->displayName = $res['displayName'];
         $user->locale = $res['locale'];
         $user->apiKey = $res['apiKey'];
+        $user->created = new Carbon($res["created"]);
+        $user->updated = new Carbon($res["updated"]);
         if (!is_null($res['hat'])) {
             $user->hat = Hat::createFromID($trs, $res['hat']);
         } else {
@@ -238,6 +243,8 @@ class User implements JsonSerializable
             'displayName' => $this->displayName,
             'locale' => $this->locale,
             'hat' => $this->hat->idHat ?? null,
+            'created' => $this->created->timestamp,
+            'updated' => $this->updated->timestamp,
         ];
     }
 }
