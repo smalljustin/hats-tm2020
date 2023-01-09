@@ -22,6 +22,7 @@ class User implements JsonSerializable
     public string $displayName;
 
     public ?int $idHat;
+    public ?string $hatConfig;
 
     public ?string $apiKey;
 
@@ -99,6 +100,7 @@ class User implements JsonSerializable
         $user->displayName = $res['displayName'];
         $user->locale = $res['locale'];
         $user->apiKey = $res['apiKey'];
+        $user->hatConfig = $res['hatConfig'];
         $user->created = new Carbon($res["created"]);
         $user->updated = new Carbon($res["updated"]);
         if (!is_null($res['hat'])) {
@@ -191,7 +193,7 @@ class User implements JsonSerializable
     public function update(): bool
     {
         return $this->trs->db->executeStatement(
-            "update users set isMember = ?, isBanned = ?, isModerator = ?, displayName = ?, locale = ?, apiKey = ?, login = ?, hat = ? where idUser = ?",
+            "update users set isMember = ?, isBanned = ?, isModerator = ?, displayName = ?, locale = ?, apiKey = ?, login = ?, hat = ?, hatConfig = ? where idUser = ?",
             [
                 $this->isMember,
                 $this->isBanned,
@@ -201,6 +203,7 @@ class User implements JsonSerializable
                 $this->apiKey,
                 $this->login,
                 $this->idHat ?? null,
+                $this->hatConfig ?? null,
                 $this->id
             ],
             [
@@ -212,6 +215,7 @@ class User implements JsonSerializable
                 "string",
                 "string",
                 "integer",
+                "string",
                 "string"
             ]
         );
@@ -256,6 +260,7 @@ class User implements JsonSerializable
             'displayName' => $this->displayName,
             'locale' => $this->locale,
             'hat' => $this->idHat ?? null,
+            'hatConfig' => $this->hatConfig ?? null,
             'created' => $this->created->timestamp,
             'updated' => $this->updated->timestamp,
         ];

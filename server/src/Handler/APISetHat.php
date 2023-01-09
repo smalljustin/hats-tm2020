@@ -47,7 +47,8 @@ class APISetHat extends \HandlerBase
                 return;
             }
 
-            $user->idHat = $hat->idHat;
+            $user->idHat = $hat->idHat ?? null;
+            $user->hatConfig = $hat->hatConfig ?? null;
             $user->update();
             $this->trs->log("user_sethat", $hat->idHat, user: $user);
 
