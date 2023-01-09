@@ -36,7 +36,7 @@
     {% endif %}
 
     <h1>Add Hat</h1>
-    <form method="post" action="/hats">
+    <form method="post" action="/hats" enctype="multipart/form-data">
         <div class="formItem">
             <label for="name">Name</label>
             <input name="name" id="name" required="required" max="255"/>

@@ -9,6 +9,7 @@ use CharlotteDunois\Collect\Collection;
 
 class Hat implements JsonSerializable
 {
+    public const MAX_HAT_SIZE = 1024 * 1024 * 8;
     public int $idHat;
     public string $name;
     public User $author;
@@ -21,36 +22,35 @@ class Hat implements JsonSerializable
     {
     }
 
-    public static function createNewHat(
-        TRSite $trs,
-        string $id,
-        string $name,
-        string $authorName,
-        string $authorLogin,
-        ?User $importingUser = null
-    ): self {
-        $qb = $trs->db->createQueryBuilder()->insert("maps")->values([
-            'idMap' => '?',
-            'name' => '?',
-            'authorName' => '?',
-            'authorLogin' => '?'
-        ])
-            ->setParameter(0, $id, 'text')
-            ->setParameter(1, $name, 'text')
-            ->setParameter(2, $authorName, 'text')
-            ->setParameter(3, $authorLogin, 'text');
-        $qb->executeStatement();
+    public static function getHatsByUser(TRSite $trs, User $user): Collection
+    {
+        $qb = $trs->db->createQueryBuilder();
+        $qb->select("*")
+            ->from("hats")
+            ->where('author = ?')
+            ->setParameter(0, $user->id);
 
-        $trs->log(
-            "map_create",
-            remarks: json_encode([
-                    'map' => $id
-                ]
-            ),
-            user: $importingUser
-        );
+        $collect = new Collection();
+        foreach ($qb->fetchAllAssociative() as $row) {
+            $collect->set($row['idHat'], self::createFromDBRow($trs, $row));
+        }
 
-        return self::createFromID($trs, $id);
+        return $collect;
+    }
+
+    public static function createFromDBRow(TRSite $trs, array $res): self
+    {
+        $hat = new static($trs);
+
+        $hat->idHat = $res['idHat'];
+        $hat->name = $res['name'];
+        $hat->author = User::createFromID($trs, $res['author']);
+        $hat->isApproved = $res['isApproved'];
+        $hat->data = $res['data'];
+        $hat->created = new \Carbon\Carbon($res['created']);
+        $hat->updated = new \Carbon\Carbon($res['updated']);
+
+        return $hat;
     }
 
     public static function createFromID(TRSite $trs, string $idHat, bool $breakCache = false): self
@@ -73,37 +73,6 @@ class Hat implements JsonSerializable
         return self::createFromDBRow($trs, $res);
     }
 
-    public static function createFromDBRow(TRSite $trs, array $res): self
-    {
-        $hat = new static($trs);
-
-        $hat->idHat = $res['idHat'];
-        $hat->name = $res['name'];
-        $hat->author = User::createFromID($trs, $res['author']);
-        $hat->isApproved = $res['isApproved'];
-        $hat->data = $res['data'];
-        $hat->created = new \Carbon\Carbon($res['created']);
-        $hat->updated = new \Carbon\Carbon($res['updated']);
-
-        return $hat;
-    }
-
-    public static function getHatsByUser(TRSite $trs, User $user): Collection
-    {
-        $qb = $trs->db->createQueryBuilder();
-        $qb->select("*")
-            ->from("hats")
-            ->where('author = ?')
-            ->setParameter(0, $user->id);
-
-        $collect = new Collection();
-        foreach ($qb->fetchAllAssociative() as $row) {
-            $collect->set($row['idHat'], self::createFromDBRow($trs, $row));
-        }
-
-        return $collect;
-    }
-
     public static function getAllHats(TRSite $trs): Collection
     {
         $qb = $trs->db->createQueryBuilder();
@@ -115,6 +84,25 @@ class Hat implements JsonSerializable
         }
 
         return $collect;
+    }
+
+    public function create()
+    {
+        $qb = $this->trs->db->createQueryBuilder()->insert("hats")->values([
+            'idHat' => '?',
+            'name' => '?',
+            'author' => '?',
+            'data' => '?',
+            'isApproved' => '?'
+        ])
+            ->setParameter(0, $this->idHat, 'integer')
+            ->setParameter(1, $this->name, 'text')
+            ->setParameter(2, $this->author->id, 'text')
+            ->setParameter(3, $this->data, 'text')
+            ->setParameter(4, $this->isApproved, 'boolean');
+        $qb->executeStatement();
+
+        $this->trs->log("hat_create", $this->idHat, user: $this->author);
     }
 
     public function update(): bool
