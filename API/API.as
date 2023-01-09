@@ -108,7 +108,7 @@ class API {
     /**
      * internal helper
      */
-    bool genericAPIPost(string _endpoint, Json::Value payload, Json::Value &out result, Net::HttpRequest@ req, bool requireKey = true, string method = "POST") {
+    bool genericAPIPost(string _endpoint, Json::Value payload, Json::Value &out result, Net::HttpRequest@ req, bool requireKey = true, const string &in method = "POST") {
         if (requireKey && apiKey.Length == 0) {
             errorMsg = "No API key entered, please go to Settings";
             return false;
@@ -116,7 +116,9 @@ class API {
 
         asyncInProgress = true;
         if (method == "POST") {
-            @req = APIReq(baseURL + _endpoint, payload);
+            @req = Net::HttpPost(baseURL + _endpoint, Json::Write(payload), "application/json");
+        } else if (method == "GET") {
+            @req = Net::HttpGet(baseURL + _endpoint);
         }
         
         while (!req.Finished()) {
@@ -154,15 +156,6 @@ class API {
             asyncInProgress = false;
             return false;
         }
-    }
-
-    /**
-     * internal helper
-     */
-    Net::HttpRequest@ APIReq(string &in url, Json::Value json)
-    {
-        auto ret = Net::HttpPost(url, Json::Write(json), "application/json");
-    	return ret;
     }
 
     /**
