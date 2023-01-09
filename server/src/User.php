@@ -259,7 +259,7 @@ class User implements JsonSerializable
             'login' => $this->login,
             'displayName' => $this->displayName,
             'locale' => $this->locale,
-            'hat' => $this->idHat ?? null,
+            'hat' => Snowflake::format($this->idHat) ?? null,
             'hatConfig' => $this->hatConfig ?? null,
             'created' => $this->created->timestamp,
             'updated' => $this->updated->timestamp,

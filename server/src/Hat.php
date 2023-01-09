@@ -153,20 +153,20 @@ class Hat implements JsonSerializable
         return round(pow(1024, $base - floor($base)), 2) . ' ' . $suffixes[floor($base)]; // todo localize
     }
 
-    public function getFormattedID(): string
-    {
-        return Snowflake::format($this->idHat);
-    }
-
     public function jsonSerialize(): object
     {
         return (object)[
-            'idHat' => $this->idHat,
+            'idHat' => $this->getFormattedID(),
             'name' => $this->name,
             'author' => $this->author,
             'approved' => $this->isApproved,
             'created' => $this->created->timestamp,
             'updated' => $this->updated->timestamp
         ];
+    }
+
+    public function getFormattedID(): string
+    {
+        return Snowflake::format($this->idHat);
     }
 }
