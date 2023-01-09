@@ -21,7 +21,7 @@ class User implements JsonSerializable
     public ?string $login;
     public string $displayName;
 
-    public ?Hat $hat;
+    public ?int $idHat;
 
     public ?string $apiKey;
 
@@ -102,11 +102,10 @@ class User implements JsonSerializable
         $user->created = new Carbon($res["created"]);
         $user->updated = new Carbon($res["updated"]);
         if (!is_null($res['hat'])) {
-            $user->hat = Hat::createFromID($trs, $res['hat']);
+            $user->idHat = $res['hat'];
         } else {
-            $user->hat = null;
+            $user->idHat = null;
         }
-
         return $user;
     }
 
@@ -187,7 +186,7 @@ class User implements JsonSerializable
                 $this->locale,
                 $this->apiKey,
                 $this->login,
-                $this->hat->idHat ?? null,
+                $this->idHat ?? null,
                 $this->id
             ],
             [
@@ -242,7 +241,7 @@ class User implements JsonSerializable
             'login' => $this->login,
             'displayName' => $this->displayName,
             'locale' => $this->locale,
-            'hat' => $this->hat->idHat ?? null,
+            'hat' => $this->idHat ?? null,
             'created' => $this->created->timestamp,
             'updated' => $this->updated->timestamp,
         ];
