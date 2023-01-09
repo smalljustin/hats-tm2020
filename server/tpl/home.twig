@@ -3,6 +3,20 @@
 {% block content %}
 
     <h1>Hats!</h1>
-    <p>todo have text here idk</p>
+    <p>This is the custom hat upload page for
+        <a href="https://openplanet.dev/plugin/hats-tm2020" target="_blank">Hats</a>, an Openplanet plugin that renders
+        hats on your Trackmania pilot/car.</p>
+
+    {% if trs.user.isLogged %}
+        <p>To upload a custom hat, please go to the <a href="/hats">My Hats</a> page.</p>
+    {% else %}
+        <p>If you would like to upload a custom hat, please <a href="/auth">log in</a> with your Ubisoft account.</p>
+    {% endif %}
+
+    <hr/>
+
+    <h2>Custom hat technical details</h2>
+
+    <p>(todo)</p>
 
 {% endblock %}
