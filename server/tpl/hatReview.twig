@@ -1,0 +1,46 @@
+{% extends "base.twig" %}
+
+{% block title %}Hat Review{% endblock title %}
+
+{% block content %}
+
+    {% if hats.count() > 0 %}
+        <h1>Hat Review</h1>
+
+        <table class="sortable">
+            <thead>
+            <tr>
+                <th class="nowrap">ID</th>
+                <th class="nowrap">Name</th>
+                <th class="nowrap">Author</th>
+                <th class="nowrap">Created</th>
+                <th class="nowrap">Status</th>
+                <th class="nowrap">File</th>
+            </tr>
+            </thead>
+            {% for h in hats %}
+                <tr>
+                    <td class="nowrap">{{ h.getFormattedID() }}</td>
+                    <td class="nowrap">{{ h.name }}</td>
+                    <td class="nowrap" data-sort="{{ h.author.displayName }}"><a
+                                href="https://trackmania.io/#/player/{{ h.author.id }}"
+                                target="_blank">{{ h.author.displayName }}</a></td>
+                    <td class="nowrap"
+                        data-sort="{{ h.created.timestamp }}">{{ h.created.locale(trs.user.locale).isoFormat("lll") }}
+                        <br/><small><em>{{ h.created.locale(trs.user.locale).longRelativeDiffForHumans(2) }}</em></small>
+                    </td>
+                    <td class="nowrap">{% if h.isApproved %}Approved{% else %}Not approved
+                            <br/><small><em>
+                                    <a href="/hats/{{ h.getFormattedID() }}/approve">Approve</a>
+                                </em></small>{% endif %}
+                    </td>
+                    <td class="nowrap"><a href="/hats/{{ h.getFormattedID() }}/data">Download</a>
+                        ({{ h.getSizeString() }})
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    {% endif %}
+
+{% endblock %}
