@@ -1,4 +1,5 @@
 namespace Hats {
+API api;
 class API {
 
     /**
@@ -46,7 +47,7 @@ class API {
 
         Json::Value result;
         Net::HttpRequest req;
-        if (genericAPIPost("/api/keystatus", payload, result, req)) {
+        if (genericAPI("/api/keystatus", payload, result, req)) {
             return true;
         } else {
             warn("Key invalid");
@@ -94,7 +95,7 @@ class API {
 
         Json::Value result;
         Net::HttpRequest req;
-        if (genericAPIPost("/auth/openplanet", json, result, req, false)) {
+        if (genericAPI("/auth/openplanet", json, result, req, false)) {
             return result["apiKey"];
         } else {
             errorMsg = "Unable to automatically auth, see Settings->API.";
@@ -108,7 +109,7 @@ class API {
     /**
      * internal helper
      */
-    bool genericAPIPost(string _endpoint, Json::Value payload, Json::Value &out result, Net::HttpRequest@ req, bool requireKey = true, const string &in method = "POST") {
+    bool genericAPI(string _endpoint, Json::Value payload, Json::Value &out result, Net::HttpRequest@ req, bool requireKey = true, const string &in method = "POST") {
         if (requireKey && apiKey.Length == 0) {
             errorMsg = "No API key entered, please go to Settings";
             return false;
