@@ -11,7 +11,10 @@ class APIUser {
     uint64 created;
     uint64 updated;
 
+    uint64 age;
+
     APIUser(Json::Value data) {
+        age = Time::Now;
         uid = data["uid"];
         login = data["login"];
         displayName = data["displayName"];
@@ -69,6 +72,41 @@ class UserFactory {
         APIUser user(data);
         users.Set(user.uid, user);
         return @user;
+    }
+
+    bool getUsersFromAPI(string[] uids, uint maxCacheAge = 3600) {
+        Json::Value result;
+        Net::HttpRequest req;
+        string endpoint = "/api/playerhats";
+
+        // filter out cached hats
+        Json::Value unfiltered = Json::Array();
+
+        for(uint i = 0; i < uids.Length; i++) {
+            if (has(uids[i])) {
+                if ((fetch(uids[i]).age + maxCacheAge) < Time::Now) {
+                    unfiltered.Add(Json::Value(uids[i]));
+                }
+            } else {
+                unfiltered.Add(Json::Value(uids[i]));
+            }
+        }
+
+        Json::Value payload = api.baseAPIObject();
+        payload["playerIDs"] = unfiltered;
+        if (api.genericAPI(endpoint, payload, result, req, true, "POST")) {
+            for (uint i = 0; i < result.Length; i++) {
+                ingest(result[i]);
+            }
+            return true;
+        } else {
+            warn("Key invalid");
+            if (api.debugSpam) {
+                trace(Json::Write(result));
+                trace(api.errorMsg);
+            }
+            return false;
+        }
     }
 }
 

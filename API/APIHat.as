@@ -9,7 +9,10 @@ class APIHat {
     uint64 created;
     uint64 updated;
 
+    uint64 age;
+
     APIHat(Json::Value data) {
+        age = Time::Now;
         idHat = data["idHat"];
         name = data["name"];
         isApproved = data["approved"];
