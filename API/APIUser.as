@@ -84,7 +84,7 @@ class UserFactory {
 
         for(uint i = 0; i < uids.Length; i++) {
             if (has(uids[i])) {
-                if ((fetch(uids[i]).age + maxCacheAge) < Time::Now) {
+                if ((fetch(uids[i]).age + maxCacheAge) < Time::Stamp) {
                     unfiltered.Add(Json::Value(uids[i]));
                 }
             } else {
