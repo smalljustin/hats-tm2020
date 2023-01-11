@@ -1,4 +1,4 @@
-GraphHud @ graphHud;
+HatRenderingBase@ hatRenderingBase;
 float g_dt = 0;
 float HALF_PI = 1.57079632679;
 string surface_override = "";
@@ -7,7 +7,7 @@ string surface_override = "";
 void Update(float dt) {
   g_dt = dt;
 
-  if (graphHud!is null) {
+  if (hatRenderingBase!is null) {
     auto app = GetApp();
     if (Setting_General_HideWhenNotPlaying) {
       if (app.CurrentPlayground!is null && (app.CurrentPlayground.UIConfigs.Length > 0)) {
@@ -18,15 +18,7 @@ void Update(float dt) {
     }
 
     if (app!is null && app.GameScene!is null) {
-      CSceneVehicleVis @[] allStates = VehicleState::GetAllVis(app.GameScene);
-      if (UseCurrentlyViewedPlayer) {
-        graphHud.update(VehicleState::ViewingPlayerState());
-      }
-      if (allStates.Length > 0) {
-        if (!UseCurrentlyViewedPlayer && (player_index < 0 || (allStates!is null && allStates.Length > player_index))) {
-          graphHud.update(allStates[player_index].AsyncState);
-        }
-      }
+      hatRenderingBase.update(getMapUid(), VehicleState::GetAllVis(app.GameScene));
     }
   }
 }
@@ -49,7 +41,7 @@ void Render() {
     return;
   }
 
-  if (graphHud!is null) {
+  if (hatRenderingBase!is null) {
     auto app = GetApp();
     if (Setting_General_HideWhenNotPlaying) {
       if (app.CurrentPlayground!is null && (app.CurrentPlayground.UIConfigs.Length > 0)) {
@@ -60,30 +52,11 @@ void Render() {
     }
 
     if (app!is null && app.GameScene!is null) {
-      if (UseCurrentlyViewedPlayer) {
-        graphHud.Render(VehicleState::ViewingPlayerState());
-      } else {
-        CSceneVehicleVis @[] allStates = VehicleState::GetAllVis(app.GameScene);
-        if (allStates.Length > 0) {
-          if (player_index < 0 || (allStates!is null && allStates.Length > player_index)) {
-            graphHud.Render(allStates[player_index].AsyncState);
-          } else {
-            UI::SetNextWindowContentSize(400, 150);
-            UI::Begin("\\$f33Invalid player index!");
-            UI::Text("No player found within player states at index " + tostring(player_index));
-            UI::Text("");
-            UI::End();
-          }
-        }
-      }
+        hatRenderingBase.Render(VehicleState::GetAllVis(app.GameScene));
     }
   }
 }
 
 void Main() {
-  @graphHud = GraphHud();
-}
-
-void OnSettingsChanged() {
-  graphHud.onSettingsChange();
+  @hatRenderingBase = HatRenderingBase();
 }

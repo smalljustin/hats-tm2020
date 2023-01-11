@@ -1,50 +1,27 @@
-class ObjRender : BaseHat {
+class ObjRender {
     bool hatRead = false;
 
-    array<Vertex> vList();
-    array<VertexNormal> vnList();
-    array<Face> fList();
+    array < Vertex > vList();
+    array < VertexNormal > vnList();
+    array < Face > fList();
 
     string active_hat = "";
+    CSceneVehicleVisState @visState;
 
+    ObjRender() {}
 
-    ObjRender() {
-        if (TOP_HAT) {
-            active_hat = "TopHat.obj";
-        } else if (CAT_EARS) {
-            active_hat = "cat_ears.obj";
-        }
-        else if (PEAKY_BLINDERS) {
-            active_hat = "PeakyBlinders.obj";
-        }
-        else {
-            active_hat = "";
-        }
-    }
-
-    void onSettingsChanged() {
-        hatRead = false;
-        if (TOP_HAT) {
-            active_hat = "TopHat.obj";
-        } else if (CAT_EARS) {
-            active_hat = "cat_ears.obj";
-        }
-        else if (PEAKY_BLINDERS) {
-            active_hat = "PeakyBlinders.obj";
-        }
-        else {
-            active_hat = "";
-        }
-        vList.RemoveRange(0, vList.Length);
-        fList.RemoveRange(0, fList.Length);
-        vnList.RemoveRange(0, vnList.Length);
+    ObjRender(string active_hat, CSceneVehicleVisState @ visState) {
+        this.active_hat = active_hat;
+        @this.visState = @visState;
+        this.readHat();
+        // startnew(CoroutineFunc(this.readHat));
     }
 
     void readHat() {
         if (hatRead || active_hat == "") {
             return;
         }
-        IO::FileSource f("hats\\" + active_hat); 
+        IO::FileSource f("hats\\" + active_hat);
         float scale = 1;
         float xloc = 0;
         float yloc = 0;
@@ -54,9 +31,8 @@ class ObjRender : BaseHat {
 
         vec4 color(1, 1, 1, 0.7);
 
-
-        while(!f.EOF()) {
-            array<string> parts = f.ReadLine().Split(" ");
+        while (!f.EOF()) {
+            array < string > parts = f.ReadLine().Split(" ");
             if (parts.Length < 2) {
                 return;
             }
@@ -80,7 +56,7 @@ class ObjRender : BaseHat {
             }
             if (parts[0] == "v") {
                 vList.InsertLast(Vertex(parts));
-            }
+            } 
             if (parts[0] == "vn") {
                 vnList.InsertLast(VertexNormal(parts));
             }
@@ -88,7 +64,8 @@ class ObjRender : BaseHat {
                 fList.InsertLast(Face(parts));
             }
         }
-        hatRead = true;
+
+        float maxVLength = 0;
 
         for (int i = 0; i < vList.Length; i++) {
             vList[i].scale = scale;
@@ -97,13 +74,17 @@ class ObjRender : BaseHat {
             vList[i].zloc = zloc;
             vList[i].color = color;
             vList[i].width = width;
+            maxVLength = Math::Max(maxVLength, vList[i].toVec().Length());
         }
+
+        for (int i = 0; i < vList.Length; i++) {
+            vList[i].applyFactor(1 / maxVLength);
+        }
+        hatRead = true;
     }
 
-    void render(CSceneVehicleVisState@ visState) override {
-        readHat();
-
-        if (active_hat == "") {
+    void render() {
+        if (active_hat == "" || !hatRead) {
             return;
         }
 
@@ -122,33 +103,28 @@ class ObjRender : BaseHat {
             Vertex v2 = vList[f.v2 - 1];
             Vertex v3 = vList[f.v3 - 1];
 
-            array<vec2> points();
+            array < vec2 > points();
 
             points.InsertLast(Camera::ToScreenSpace(
                 projectHatSpace(visState, v1)
             ));
 
             points.InsertLast(Camera::ToScreenSpace(
-            projectHatSpace(visState, v2)
+                projectHatSpace(visState, v2)
             ));
 
             points.InsertLast(Camera::ToScreenSpace(
-            projectHatSpace(visState, v3)
+                projectHatSpace(visState, v3)
             ));
 
             points.InsertLast(Camera::ToScreenSpace(
-            projectHatSpace(visState, v1)
+                projectHatSpace(visState, v1)
             ));
-
-            for (int i = 0; i < points.Length - 1; i++) {
-                if (Math::Abs((points[i] - points[i + 1]).LengthSquared()) < w ** 2 ) {
-                    shouldRender = false;
-                }
-            }
 
             if (!shouldRender) {
                 continue;
             }
+
             nvg::BeginPath();
             nvg::MoveTo(points[0]);
 
@@ -158,31 +134,42 @@ class ObjRender : BaseHat {
 
             if (OBJECT_EDIT_OVERRIDE) {
                 nvg::StrokeColor(COLOR_OVERRIDE);
-                nvg::StrokeWidth(w);     
+                nvg::StrokeWidth(w);
             } else {
-            nvg::StrokeColor(v1.color);
-            nvg::StrokeWidth(w);
+                nvg::StrokeColor(v1.color);
+                nvg::StrokeWidth(w);
             }
             nvg::Stroke();
             nvg::ClosePath();
         }
 
     }
+    vec3 projectHatSpace(CSceneVehicleVisState @ visState, Vertex point) {
+        vec3 vertexPoint = point.toVec();
+        if (OBJECT_EDIT_OVERRIDE) {
+            vertexPoint *= SCALE_OVERRIDE;
+        } else {
+            vertexPoint *= point.scale;
+        }
+        vec3 res = offsetHatPoint(visState, visState.Position + (visState.Left * vertexPoint.x) + (visState.Up * vertexPoint.y) + (visState.Dir * vertexPoint.z), HAT_Y_OFFSET, HAT_X_OFFSET);
+
+        if (OBJECT_EDIT_OVERRIDE) {
+            res += (visState.Left * X_AXIS_OVERRIDE);
+            res += (visState.Up * Y_AXIS_OVERRIDE);
+            res += (visState.Dir * Z_AXIS_OVERRIDE);
+        } else {
+            res += (visState.Left * point.xloc);
+            res += (visState.Up * point.yloc);
+            res += (visState.Dir * point.zloc);
+        }
+
+        return res;
     }
 
-    vec3 _getPoint(int lineIdx, float theta) {
-        if (lineIdx == 0) {
-        return _line_0(theta); }
-        return vec3(0, 0, 0 );
+    vec3 offsetHatPoint(CSceneVehicleVisState @ visState, vec3 point, float y_offset, float x_offset) {
+        point += visState.Dir * -x_offset;
+        point += visState.Up * y_offset;
+        return point;
     }
 
-    vec3 _line_0(float theta) {
-        // Making the headband. 
-        // To do this: 
-        // X and Z axis both just move from [high, 0] -> [0, high] in an arc. 
-        // Y axis stays flat. 
-
-        float x = elipse(theta, HAT_MAJOR_AXIS, HAT_MINOR_AXIS);
-        float z = elipse(theta, HAT_MINOR_AXIS, HAT_MAJOR_AXIS);
-        return vec3(x, 0, z);
-    }
+}

@@ -22,6 +22,12 @@ class Vertex {
     vec3 toVec() {
         return vec3(x, y, z);
     }
+
+    void applyFactor(float factor) {
+        this.x *= factor;
+        this.y *= factor;
+        this.z *= factor;
+    }
 }
 
 
