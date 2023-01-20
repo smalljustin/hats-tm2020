@@ -3,6 +3,11 @@ float g_dt = 0;
 float HALF_PI = 1.57079632679;
 string surface_override = "";
 
+Hats::API @api;
+Hats::UserFactory @users;
+Hats::HatFactory @hats;
+bool hasCheckedAPIKey = false;
+
 
 void Update(float dt) {
   g_dt = dt;
@@ -82,8 +87,29 @@ void Render() {
 
 void Main() {
   @graphHud = GraphHud();
+  @api = Hats::API(HATSERVER_LOCAL ? "http://localhost:8000" : "https://tm-hats.misfitmaid.com", HATSERVER_APIKEY);
+
+    if (!hasCheckedAPIKey) {
+      if (!api.checkKeyStatus()) {
+          HATSERVER_APIKEY = "";
+      }
+      hasCheckedAPIKey = true;
+  }
+
+	if (HATSERVER_APIKEY == "" || HATSERVER_PHONE_HOME < Time::Stamp) {
+		HATSERVER_APIKEY = api.fetchAPIKey();
+		HATSERVER_PHONE_HOME = Time::Stamp + (86400 * 7);
+	}
+
+  @hats = Hats::HatFactory();
+  @users = Hats::UserFactory();
+
+  if (!hats.getHatsFromAPI(HATSERVER_APIKEY != "")) {
+    warn("Unable to fetch hats, check network info");
+  }
 }
 
 void OnSettingsChanged() {
   graphHud.onSettingsChange();
 }
+

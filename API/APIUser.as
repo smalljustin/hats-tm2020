@@ -19,10 +19,20 @@ class APIUser {
         login = data["login"];
         displayName = data["displayName"];
         locale = data["locale"];
-        hat = data["hat"];
-        hatConfig = data["hatConfig"];
         created = data["created"];
         updated = data["updated"];
+
+        if (data["hat"].GetType() == Json::Type::String) {
+            hat = data["hat"];
+        } else {
+            hat = "";
+        }
+
+        if (data["hatConfig"].GetType() == Json::Type::String) {
+            hatConfig = data["hatConfig"];
+        } else {
+            hatConfig = "";
+        }
     }
 
     bool updateHat() {
@@ -53,7 +63,6 @@ class APIUser {
 
 }
 
-UserFactory users;
 class UserFactory {
     protected dictionary users;
     UserFactory() {

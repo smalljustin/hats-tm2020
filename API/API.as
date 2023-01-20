@@ -1,5 +1,4 @@
 namespace Hats {
-API api;
 class API {
 
     /**

@@ -80,3 +80,12 @@ vec4 COLOR_OVERRIDE = vec4(1, 1, 1, 1);
 
 [Setting category="Custom Hats" name="Width override" min=0.1 max=4]
 float WIDTH_OVERRIDE = 1;
+
+[Setting category="Networking" name="Use Dev server" description="If toggled, after reloading the plugin will communicate with http://localhost:8000 instead of the normal Hats server. Leave this off if that flew over your head."]
+bool HATSERVER_LOCAL = false;
+
+[Setting category="Networking" hidden]
+string HATSERVER_APIKEY = "";
+
+[Setting category="Networking" hidden]
+uint64 HATSERVER_PHONE_HOME = 0;

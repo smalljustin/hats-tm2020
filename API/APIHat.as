@@ -19,13 +19,12 @@ class APIHat {
         created = data["created"];
         updated = data["updated"];
 
-        author = users.ingest(data["author"]);
+        @author = users.ingest(data["author"]);
     }
 
 
 }
 
-HatFactory hats;
 class HatFactory {
     protected dictionary hats;
 
