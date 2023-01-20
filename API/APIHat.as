@@ -22,7 +22,13 @@ class APIHat {
         @author = users.ingest(data["author"]);
     }
 
+    string getHatData() {
+        return api.getHatData(idHat);
+    }
 
+    string ToString() {
+        return "APIHat " + idHat + " (" + name + " by " + author.displayName + ")";
+    }
 }
 
 class HatFactory {
@@ -68,6 +74,13 @@ class HatFactory {
                 trace(api.errorMsg);
             }
             return false;
+        }
+    }
+
+    void dumpHats() {
+        string[] keys = hats.GetKeys();
+        for (uint i = 0; i < keys.Length; i++) {
+            trace(cast<APIHat>(hats[keys[i]]));
         }
     }
 }

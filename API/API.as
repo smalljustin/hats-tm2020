@@ -158,6 +158,14 @@ class API {
         }
     }
 
+    string getHatData(const string &in idHat) {
+        Net::HttpRequest @req = Net::HttpGet(baseURL + "/hats/" + idHat + "/data");
+        while (!req.Finished()) {
+            yield();
+        }
+        return req.Body;
+    }
+
     /**
      * internal helper
      */

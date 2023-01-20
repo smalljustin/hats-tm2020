@@ -58,8 +58,9 @@ class APIUser {
         return hats.fetch(hat);
     }
 
-
-
+    string ToString() {
+        return "APIUser " + uid + " (" + displayName + ")";
+    }
 
 }
 
@@ -115,6 +116,13 @@ class UserFactory {
                 trace(api.errorMsg);
             }
             return false;
+        }
+    }
+
+    void dumpUsers() {
+        string[] keys = users.GetKeys();
+        for (uint i = 0; i < keys.Length; i++) {
+            trace(cast<APIUser>(users[keys[i]]));
         }
     }
 }
