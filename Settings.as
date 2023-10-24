@@ -3,6 +3,9 @@ bool g_visible = true;
 
 bool Setting_General_HideWhenNotPlaying = true;
 
+[Setting category="General" name="Use Physics Hat"]
+bool PHYSICS_HAT = true;
+
 [Setting category="General" name="Use Circular Hat"]
 bool USE_CIRCLE_HAT = true;
 
