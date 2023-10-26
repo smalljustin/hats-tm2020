@@ -46,14 +46,15 @@ class PolarCoordinatePlane {
             return; 
         }
 
+        if (PHYSICS_HAT) {
+            physicsHat.render(visState);
+        }
+        
         if (USE_CIRCLE_HAT) {
             circularHat.render(visState);
             return;
         }
-        if (PHYSICS_HAT) {
-            physicsHat.render(visState);
-            return;
-        }
+
         objRender.render(visState);
     }
 
